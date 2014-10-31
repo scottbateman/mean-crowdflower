@@ -1,0 +1,19 @@
+<section data-ng-controller="UnitsController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Units</h1>
+    </div>
+    <div class="list-group">
+        <a data-ng-repeat="unit in units" data-ng-href="#!/units/{{unit._id}}" class="list-group-item">
+			<small class="list-group-item-text">
+				Posted on
+				<span data-ng-bind="unit.created | date:'medium'"></span>
+				by
+				<span data-ng-bind="unit.user.displayName"></span>
+			</small>
+			<h4 class="list-group-item-heading" data-ng-bind="unit.name"></h4>
+        </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!units.$resolved || units.length">
+    	No Units yet, why don't you <a href="/#!/units/create">create one</a>?
+    </div>
+</section>

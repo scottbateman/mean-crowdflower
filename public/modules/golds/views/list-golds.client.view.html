@@ -1,0 +1,19 @@
+<section data-ng-controller="GoldsController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Golds</h1>
+    </div>
+    <div class="list-group">
+        <a data-ng-repeat="gold in golds" data-ng-href="#!/golds/{{gold._id}}" class="list-group-item">
+			<small class="list-group-item-text">
+				Posted on
+				<span data-ng-bind="gold.created | date:'medium'"></span>
+				by
+				<span data-ng-bind="gold.user.displayName"></span>
+			</small>
+			<h4 class="list-group-item-heading" data-ng-bind="gold.name"></h4>
+        </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!golds.$resolved || golds.length">
+    	No Golds yet, why don't you <a href="/#!/golds/create">create one</a>?
+    </div>
+</section>

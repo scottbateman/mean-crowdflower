@@ -1,0 +1,27 @@
+<section data-ng-controller="JobtemplatesController" data-ng-init="findOne()">
+	<div class="page-header">
+		<h1 data-ng-bind="jobtemplate.name"></h1>
+	</div>
+	<div class="pull-right">
+		<a class="btn btn" href="/#!/jobtemplates/{{jobtemplate._id}}/edit">
+			<i class="glyphicon glyphicon-edit">Edit</i>
+		</a>
+		<a class="btn btn-primary" data-ng-click="remove();">
+			<i class="glyphicon glyphicon-trash"></i>
+		</a>
+	</div>
+  <div>
+    <b>CSS</b><span data-ng-bind="jobtemplate.template.css"></span>
+    <b>JS</b><span data-ng-bind="jobtemplate.template.js"></span>
+    <b>CML</b><span data-ng-bind="jobtemplate.template.cml"></span>
+  </div>
+  {{jobtemplate}}
+	<small>
+		<em class="text-muted">
+			Posted on
+			<span data-ng-bind="jobtemplate.created | date:'mediumDate'"></span>
+			by
+			<span data-ng-bind="jobtemplate.user.displayName"></span>
+		</em>
+	</small>
+</section>
