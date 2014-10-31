@@ -4,13 +4,7 @@
     </div>
     <div class="list-group">
         <a data-ng-repeat="tweet in tweets" data-ng-href="#!/tweets/{{tweet._id}}" class="list-group-item">
-			<small class="list-group-item-text">
-				Posted on
-				<span data-ng-bind="tweet.created | date:'medium'"></span>
-				by
-				<span data-ng-bind="tweet.user.displayName"></span>
-			</small>
-			<h4 class="list-group-item-heading" data-ng-bind="tweet.name"></h4>
+          <h4 class="list-group-item-heading" data-ng-bind="tweet.user.name"></h4>
         </a>
     </div>
     <div class="alert alert-warning text-center" data-ng-hide="!tweets.$resolved || tweets.length">

@@ -19,7 +19,7 @@ angular.module('jobtemplates').controller('JTEditCtrl', ['$scope', '$stateParams
     });
 
     $scope.addField = function () {
-      $scope.fields.push({value:""});
+      $scope.fields.push({value:''});
     };
 
     $scope.removeField = function (index) {

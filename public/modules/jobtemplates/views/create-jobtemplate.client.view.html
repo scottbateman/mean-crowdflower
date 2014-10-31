@@ -10,6 +10,11 @@
                       <label class="control-label" for="name">Name</label>
                       <input type="text" data-ng-model="name" id="name" class="form-control"required>
 
+                      <label class="control-label" for="models">Data Type</label>
+                      <select data-ng-model="model" class="form-control" required>
+                        <option ng-repeat="m in models">{{m}}</option>
+                      </select>
+
                       <label class="control-label" for="css">CSS</label>
                       <input type="text" data-ng-model="css" id="css" class="form-control"  required>
 
@@ -18,11 +23,6 @@
 
                       <label class="control-label" for="cml">CML</label>
                       <textarea type="text" data-ng-model="cml" id="cml" class="form-control" required></textarea>
-
-                      <label class="control-label" for="models">Data Type</label>
-                      <select data-ng-model="model" class="form-control" required>
-                        <option ng-repeat="m in models">{{m}}</option>
-                      </select>
 
                       <h3>Fields</h3>
                       <div class="well">

@@ -75,15 +75,15 @@ DatastepSchema.methods.nextStep = function (apiKey, callback) {
           this.currentStep = step;
           wf.pushStepQueue(step, this.data);
         }
-        else {
+        //else {
           /**
            * @todo push data to origin
            */
-        }
+        //}
         this.save(callback);
       }.bind(this);
 
-      if (!step) {
+      if (this.currentStep === undefined) {
         setStep(0);
       }
       else {

@@ -11,6 +11,10 @@
                       <label class="control-label" for="name">Name</label>
                       <input type="text" data-ng-model="jobtemplate.name" id="name" class="form-control" placeholder="Name" required>
 
+                      <label class="control-label" for="models">Data Type</label>
+                      <select id="models" data-ng-model="jobtemplate.model" class="form-control" required>
+                        <option ng-repeat="m in models">{{m}}</option>
+                      </select>
 
                       <label class="control-label" for="css">CSS</label>
                       <input type="text" data-ng-model="jobtemplate.template.css" id="css" class="form-control" placeholder="CSS" required>
@@ -22,12 +26,6 @@
 
                       <label class="control-label" for="cml">CML</label>
                       <textarea type="text" data-ng-model="jobtemplate.template.cml" id="cml" class="form-control" required></textarea>
-
-
-                      <label class="control-label" for="models">Data Type</label>
-                      <select id="models" data-ng-model="jobtemplate.model" class="form-control" required>
-                        <option ng-repeat="m in models">{{m}}</option>
-                      </select>
 
                       <h3>Fields</h3>
                       <div class="well">
