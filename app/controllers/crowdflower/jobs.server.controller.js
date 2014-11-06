@@ -72,7 +72,7 @@ exports.delete = function(req, res) {
 /**
  * List of Jobs
  */
-exports.list = function(req, res) { Job.find().sort('-created').populate('user', 'displayName').exec(function(err, jobs) {
+exports.list = function(req, res) { Job.find('-apiKey').sort('-created').populate('user', 'displayName').exec(function(err, jobs) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -86,7 +86,7 @@ exports.list = function(req, res) { Job.find().sort('-created').populate('user',
 /**
  * Job middleware
  */
-exports.jobByID = function(req, res, next, id) { Job.findById(id).populate('user', 'displayName').exec(function(err, job) {
+exports.jobByID = function(req, res, next, id) { Job.findById(id, '-apiKey').populate('user', 'displayName').exec(function(err, job) {
 		if (err) return next(err);
 		if (! job) return next(new Error('Failed to load Job ' + id));
 		req.job = job ;

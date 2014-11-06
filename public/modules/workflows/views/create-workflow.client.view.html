@@ -8,10 +8,13 @@
                 <div class="form-group">
                     <div class="controls">
                       <label class="control-label" for="name">Name</label>
-                      <input type="text" data-ng-model="name" id="name" class="form-control" placeholder="Name" required>
+                      <input type="text" data-ng-model="name" id="name" class="form-control" required>
+
+                      <label class="control-label" for="name">API Key</label>
+                      <input type="text" data-ng-model="apiKey" id="apiKey" class="form-control" required>
 
                       <label class="control-label" for="name">Active</label>
-                      <input type="checkbox" data-ng-model="active" value="active"><br/>
+                      <input type="checkbox" data-ng-model="active" value="active" data-toggle="toggle"><br/>
 
                       <label class="control-label" for="name">Model</label>
                       <select data-ng-model="model" class="form-control" ng-change="loadTemplates(model)" required>

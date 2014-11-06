@@ -72,7 +72,7 @@ exports.delete = function(req, res) {
 /**
  * List of Workflows
  */
-exports.list = function(req, res) { Workflow.find().sort('-created').populate('user', 'displayName').exec(function(err, workflows) {
+exports.list = function(req, res) { Workflow.find('-apiKey').sort('-created').populate('user', 'displayName').exec(function(err, workflows) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
@@ -86,7 +86,7 @@ exports.list = function(req, res) { Workflow.find().sort('-created').populate('u
 /**
  * Workflow middleware
  */
-exports.workflowByID = function(req, res, next, id) { Workflow.findById(id).populate('user', 'displayName').exec(function(err, workflow) {
+exports.workflowByID = function(req, res, next, id) { Workflow.findById(id, '-apiKey').populate('user', 'displayName').exec(function(err, workflow) {
 		if (err) return next(err);
 		if (! workflow) return next(new Error('Failed to load Workflow ' + id));
 		req.workflow = workflow ;
@@ -106,9 +106,8 @@ exports.hasAuthorization = function(req, res, next) {
 
 
 exports.ingestData = function (req, res, next) {
-  /** @todo this is not right */
-  var apiKey = '1111';
-  req.workflow.ingestData(apiKey, req.body, function (err, data) {
+  //GOOD
+  req.workflow.ingestData(req.body, function (err, data) {
     res.jsonp({data: data});
   });
 };

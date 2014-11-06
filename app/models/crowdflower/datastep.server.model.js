@@ -38,9 +38,14 @@ var DatastepSchema = new Schema({
    * units
    * An array of Units created during this workflow.
    */
-  units: [{
-    type: Schema.ObjectId,
-    ref: 'Unit'
+  results:  [{
+    id: Number,
+    difficulty: Number,
+    judgments_count: Number,
+    state: String,
+    missed_count: Number,
+    job_id: Number,
+    results: {}
   }],
 
   /**
@@ -57,68 +62,87 @@ var DatastepSchema = new Schema({
   finished: Boolean
 });
 
+DatastepSchema.methods.connect = function () {
+  return {};
+};
+
 
 /**
  * nextStep
+ * @param apiKey
  * @param callback
  *
- * This function checks the value
+ * Validates results from latest unit.
+ * Determines the next step.
+ * Pushes data into the next step.
+ *
+ * If it's a new unit, it just pushes the data into the first step.
+ *
+ * @see WorkflowSchema.methods.pushStepQueue
+ *
+ * Called by:
+ * @see WorkflowSchema.methods.ingestData
+ *
  */
-DatastepSchema.methods.nextStep = function (apiKey, callback) {
+DatastepSchema.methods.nextStep = function (callback) {
+  if (callback===undefined){
+    callback = function () {};
+  }
   var Workflow = mongoose.model('Workflow');
   var Unit = mongoose.model('Unit');
+
+  var dataStep = this;
+  var result = dataStep.results[dataStep.results.length-1].results;
 
   Workflow.findById(this.workflow,
     function (err, wf) {
       var setStep = function (step) {
         if (step >= 0) {
-          this.currentStep = step;
-          wf.pushStepQueue(step, this.data);
+          dataStep.currentStep = step;
+          wf.pushStepQueue(step, dataStep.data, callback);
         }
-        //else {
-          /**
-           * @todo push data to origin
-           */
-        //}
-        this.save(callback);
-      }.bind(this);
+        else {
+          console.log("FINISHED!");
+          wf.completed.push(dataStep.data);
+        /**
+         * @todo push data to origin
+         */
+          }
+        dataStep.save();
+      };
 
-      if (this.currentStep === undefined) {
+      if (dataStep.currentStep === null) {
         setStep(0);
       }
       else {
-        var step = wf.steps[this.currentStep];
-        var uid = this.units[this.units.length - 1];
-        var u = Unit.findById(uid);
+        var step = wf.steps[dataStep.currentStep];
 
-        u.crowdflower(apiKey)
-          .then(isAccepted)
-          .then(selectStep)
-          .then(setStep, anError);
-
-
-        var isAccepted = function (unit) {
-          /**
-           * @todo Iterate through step.acceptance and check if the c
-           */
-
-          for (var i = 0; i < step.requirements.length; i++) {
+        // Iterate through requirements
+        var field;
+        var confidence;
+        var accepted = true;
+        console.log("Checking Steps (", step.requirements.length, ")");
+        for (var i = 0; i < step.requirements.length; i++){
+          field = step.requirements[i].field;
+          confidence = step.requirements[i].confidence;
+          console.log("Field:", field);
+          console.log("Confidence Target:", confidence);
+          console.log("Confidence Actual:", result[field]);
+          if (result[field].confidence < confidence){
+            accepted = false;
           }
-          return true;
-        }.bind(this);
+        }
 
-        var selectStep = function (accepted) {
-          if (accepted) {
-            return step.nextPass;
-          }
-          return step.nextFail;
-        }.bind(this);
-
-
-        var anErr = function (err) {
-        };
+        if (accepted){
+          console.log("PASS");
+          setStep(step.nextPass);
+        }
+        else{
+          console.log("FAIL");
+          setStep(step.nextFail);
+        }
       }
-    }.bind(this));
+    });
 };
 
 

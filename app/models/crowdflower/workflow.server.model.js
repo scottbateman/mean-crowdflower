@@ -31,12 +31,18 @@ var WorkflowSchema = new Schema({
   /**
    * @todo Make more of these fields required with defaults.
    */
+  apiKey: String,
 
   /**
    * active
    * Whether or not this Workflow is running.
    */
   active: Boolean,
+
+  /**
+   * completed
+   */
+  completed:[Schema.ObjectId],
 
   /**
    * model
@@ -76,7 +82,8 @@ var WorkflowSchema = new Schema({
      */
     requirements: [{
       field: String,
-      confidence: Number
+      confidence: Number,
+      weight: Number
     }],
 
     /**
@@ -111,96 +118,173 @@ WorkflowSchema.methods.addStep = function (step, callback) {
 };
 
 
-WorkflowSchema.methods.ingestData = function (apiKey, data, callback) {
+/**
+ * ingestData
+ * @param data
+ * @param callback
+ *
+ * Creates new data objects, and then creates new datastep objects for each
+ * dataobjects, and pushes it into the workflow.
+ *
+ * @see DatastepSchema.methods.nextStep
+ */
+WorkflowSchema.methods.ingestData = function (data, callback) {
   var DataType = mongoose.model(this.model);
   var Datastep = mongoose.model('Datastep');
-  var dataSteps = [];
   var id = this._id;
 
-  if (!(data instanceof Array)){
-    data = [data];
-  }
-
-  for (var i=0; i<data.length; i++){
-    // Crate new Data object.
-    data[i] = new DataType({
-      data: data[i]
-    });
-    data[i].save(datastepstuff.bind(this, i, data[i]));
-  }
-
-  callback(null, data);
-
-
-  function datastepstuff(i, d) {
-    dataSteps[i] = new Datastep({
-      data: d._id,
+  /**
+   * createDataStep
+   * @param data_id
+   *
+   * Creates a Datstep the Datatype just created.
+   * Only used in this function.
+   */
+  var createDataStep = function (data_id) {
+    /** @todo move this function to the either the Data or Datastep methods. */
+    var ds = new Datastep({
+      data: data_id,
       workflow: id,
       units: [],
       currentStep: null,
       finished: false
     });
 
-    dataSteps[i].save();
-    dataSteps[i].nextStep(apiKey);
+    ds.save();
+    ds.nextStep();
+  };
+
+  /**
+   * Data passed in is assumed ot be an array.
+   */
+  if (!(data instanceof Array)){
+    data = [data];
   }
+
+  /**
+   * Iterate through Data Array and create a new object for each.
+   */
+  for (var i=0; i<data.length; i++){
+    // IDs can be passed in a couple ways. This cleans them up.
+    var did = data[i]._id;
+    if ( did && !(did instanceof Schema.ObjectId)){
+      data[i]._id = mongoose.Types.ObjectId(did.$oid);
+    }
+
+    //
+    data[i] = new DataType(data[i]);
+    data[i].save(createDataStep.bind(null, data[i]._id));
+  }
+
+  callback(null, data);
 };
 
-WorkflowSchema.methods.pushStepQueue = function (stepIndex, objectId, apiKey, callback) {
+
+/**
+ * pushStepQueue
+ * @param stepIndex
+ * @param objectId
+ * @param callback
+ *
+ * Pushes a new data ObjectId into the queue of the given step.
+ * If the queue is full, it uploads the queue.
+ *
+ * @see WorkflowSchema.methods.uploadStepQueue
+ */
+WorkflowSchema.methods.pushStepQueue = function (stepIndex, objectId, callback) {
   /**
    * @todo Make sure the object is of the right type.
    */
   this.steps[stepIndex].queue.push(objectId);
-  var step = this.steps[stepIndex]; // Using this variable didn't workfor the above command.
+  var step = this.steps[stepIndex]; // Using this variable didn't work for the above command.
+
   this.save(function (err, wf) {
     if (err) callback(err);
 
     else if (step.queue.length >= step.queueLimit) {
-      wf.uploadStepQueue(stepIndex, apiKey, callback)
+      wf.uploadStepQueue(stepIndex, callback);
     }
-
     else {
-      callback('Your data has been queued.');
+      callback({});
     }
   }.bind(this));
 };
 
-WorkflowSchema.methods.uploadStepQueue = function (stepIndex, apiKey, callback) {
-  var step = this.steps[stepIndex];
-  var queue = step.queue;
+/**
+ *
+ * @param stepIndex
+ * @param callback
+ *
+ * Get-or-creates a Job from this step's template.
+ * @see JobtemplateSchema.methods.createJob
+ *
+ * Creates a string from the data objects in the queue.
+ * Uploads the created string to the Job on crowdflower.
+ * @see JobSchema.methods.uploadString
+ *
+ *
+ * Called by:
+ * @see WorkflowSchema.methods.pushStepQueue
+ *
+ */
+WorkflowSchema.methods.uploadStepQueue = function (stepIndex, callback) {
   var DataType = mongoose.model(this.model);
   var Jobtemplate = mongoose.model('Jobtemplate');
   var Job = mongoose.model('Job');
 
-  var jt = Jobtemplate.findById(step.template);
+  var apiKey = this.apiKey;
 
-  var job = Job.findOne({template: step.template}, function (err, job) {
-    if (err) callback(err);
+  var step = this.steps[stepIndex];
+  var workflowId = this._id;
+  var queue = step.queue;
 
-    else if (job === undefined){
-      /** @todo Instantiate job from template. */
-      job = jt.createJob(maria);
-    }
-    else {
-      maria(null, job);
-    }
+  Jobtemplate.findById(step.template, function (err, jt) {
+    if (err) { console.error(err); }
+    else if (jt) {
+      Job.findOne({ apiKey: apiKey, template: step.template },
+        function (err, job) {
+          var createStringAndUpload = function (err, job) {
+            if (err) console.error(err);
+            else {
 
-    var maria = function (err, job) {
-      if (err) callback(err);
-      else {
-        var queueStrings = [];
-        for (var i = 0; i < queue.length; i++) {
-          DataType.findById(queue[i], function (err, d) {
-            if (err) callback(err);
-            if (d)   queueStrings.push(JSON.stringify(d.data));
+              var queueStrings = [];
 
-            if (queueStrings.length === queue.length) {
-              job.uploadDataString(queueStrings.join(), apiKey, callback);
+              // Load each Data object
+              for (var i = 0; i < queue.length; i++) {
+                DataType.findById(queue[i], function (err, dMongo) {
+                  if (err) { callback(err); }
+                  else if (dMongo) {
+                    var d = dMongo.toObject();
+                    // Add the ID of this Workflow to the data to be uploaded.
+                    d._wf_id = workflowId;
+                    d._s_id = stepIndex;
+
+                    // Create a string from the Data object.
+                    queueStrings.push(JSON.stringify(d));
+
+                    if (queueStrings.length === queue.length) {
+                      // Merge all strings together and upload them to the job.
+                      job.uploadString(queueStrings.join(''), callback);
+
+                    }
+                  }
+                });
+              }
             }
-          });
-        }
-      }
-    };
+          };
+
+          if (err) console.error(err);
+          else if (job === null) {
+            // If a job wasn't found, create one.
+            job = this.jt.createJob(apiKey, createStringAndUpload);
+          }
+          else {
+            // Upload string to the job.
+            createStringAndUpload(null, job);
+          }
+        }.bind({jt: jt})
+      );
+    }
   });
 };
 

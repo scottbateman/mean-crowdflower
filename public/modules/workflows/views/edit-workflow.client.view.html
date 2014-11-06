@@ -14,6 +14,10 @@
                   <label class="control-label">Active</label>
                   <input type="checkbox" data-ng-model="workflow.active" value="active"><br/>
 
+                  <label class="control-label">API Key</label>
+                  <input type="text" data-ng-model="workflow.apiKey" id="key" class="form-control" placeholder="Name" required>
+
+
                   <label class="control-label" for="name">Model</label>
                   <select data-ng-model="workflow.model" class="form-control" ng-change="loadTemplates(model)" required>
                     <option ng-repeat="m in models">{{m}}</option>
@@ -23,13 +27,24 @@
                   <h3>Steps</h3>
                   <div class="well">
                     <div ng-repeat="step in workflow.steps" id="steps" class="panel panel-primary">
+
                       <div class="panel-heading">
                         Step {{$index}}
-                        <button type="button" ng-click="removeStep($index)" class="btn-xs btn-default pull-right"><span class="glyphicon glyphicon-minus"></span></button>
+                        <!-- "Remove Step" button. -->
+                        <button type="button"
+                                ng-click="removeStep($index)"
+                                class="btn-xs btn-default pull-right">
+                          <span class="glyphicon glyphicon-minus"></span>
+                        </button>
                       </div>
-                      <div class="panel-body">
+
+                      <div class="panel-body" >
                         <label class="control-label">Job Template</label>
-                        <select data-ng-model="templateIndex" class="form-control" ng-change="loadFields(step, templateIndex)" required>
+                        <!--<select data-ng-model="templateIndex" class="form-control" ng-change="loadFields(step, templateIndex)" required>-->
+                          <!--<option ng-repeat="template in templates" value="{{$index}}">{{template.name}}</option>-->
+                        <!--</select>-->
+
+                        <select data-ng-model="step.templateIndex" class="form-control" ng-change="loadFields(step, step.templateIndex)" required>
                           <option ng-repeat="template in templates" value="{{$index}}">{{template.name}}</option>
                         </select>
 

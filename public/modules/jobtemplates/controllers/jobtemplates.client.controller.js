@@ -34,7 +34,7 @@ angular.module('jobtemplates').controller('JobtemplatesController', ['$scope', '
 			var jobtemplate = new Jobtemplates ({
 				name: this.name,
         model: this.model,
-        template: {
+        data: {
           css: this.css,
           js: this.js,
           cml: this.cml

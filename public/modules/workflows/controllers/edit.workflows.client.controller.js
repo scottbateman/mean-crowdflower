@@ -44,6 +44,14 @@ angular.module('workflows').controller('WorkflowsEditCtrl',
       }
     };
 
+    $scope.setTemplateIndex = function (step) {
+      for(var i=0; i<$scope.templates; i++){
+        if ($scope.templates[i]._id == step.template){
+          step.templateIndex = i;
+        }
+      }
+    };
+
     // Update existing Workflow
     $scope.update = function() {
       var workflow = $scope.workflow ;

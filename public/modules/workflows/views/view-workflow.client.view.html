@@ -1,5 +1,6 @@
 <section data-ng-controller="WorkflowsController" data-ng-init="findOne()">
-	<div class="page-header">
+
+	<div class="page-header" layout="horizontal">
 		<h1 data-ng-bind="workflow.name"></h1>
 	</div>
 	<div class="pull-right">
@@ -10,29 +11,23 @@
 			<i class="glyphicon glyphicon-trash"></i>
 		</a>
 	</div>
-  <div>
+  <div layout="vertical">
     <button class="btn btn-success" disabled="disabled" ng-show="workflow.active">Active</button>
     <button class="btn btn-danger" disabled="disabled" ng-show="!workflow.active">Inactive</button>
+    {{workflow.apiKey}}
     <h3>Steps</h3>
     <div class="well">
-      <div ng-repeat="step in workflow.steps" class="panel panel-primary" ng-init="loadStepTemplate(step)">
-        <div class="panel-heading">
-          Step {{$index}}
-        </div>
+      <div ng-repeat="step in workflow.steps" class="panel panel-default" ng-init="loadStepTemplate(step)">
+        <header class="panel-heading">Step {{$index}}</header>
         <div class="panel-body">
-          Job Template: <a href="/#!/jobtemplates/{{step.template}}">{{step.templateObject.name}}</a><br/>
-
-          Number in Queue: {{step.queue.length}}<br/>
-
-          Queue Limit:  {{step.queueLimit}}<br/>
-
-          PASS - Go To Step: {{step.nextPass}}<br/>
-
-          FAILS - Go To Step: {{step.nextFail}}<br/>
-
-          <h4>Requirements</h4>
-          <div ng-repeat="requirement in step.requirements">
-            {{requirement.field}}: {{requirement.confidence}}
+          <div>
+            Template: <a href="/#!/jobtemplates/{{step.template}}">{{step.templateObject.name}}</a>
+          </div>
+          <div>
+            Queue Size: {{step.queue.length}}
+          </div>
+          <div>
+            Queue Limit: {{step.queueLimit}}
           </div>
         </div>
       </div>

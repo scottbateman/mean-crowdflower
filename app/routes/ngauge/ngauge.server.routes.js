@@ -5,6 +5,6 @@ module.exports = function(app) {
 
   app.route('/api/ngauge')
     /** @todo GET return latest completed tweets. */
-    .post(ngauge.webhooks);
+    .post(ngauge.ngaugePost);
 
 };

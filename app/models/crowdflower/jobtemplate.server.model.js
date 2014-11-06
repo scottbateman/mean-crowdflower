@@ -25,29 +25,67 @@ var JobtemplateSchema = new Schema({
 	},
   model: String,
   fields: [String],
-  template: {
+  data: {
+    id: String,
+    title: String,
+    alias: String,
+
+    // Job Instructions
+    cml: String,
     css: String,
     js: String,
-    cml: String,
     instructions: String,
-    title: String
-  },
-  settings: {
-    /** @todo fill out settings info. */
+
+    units_per_assignment: Number,
+    gold_per_assignment: Number,
+    pages_per_assignment: Number,
+
+
+    judgments_per_unit: Number,
+    max_judgments_per_worker: Number,
+    max_judgments_per_unit: Number,
+    max_judgments_per_ip: Number,
+    minimum_account_age_seconds: Number,
+    min_unit_confidence: Number,
+    units_remain_finalized: Boolean,
+
+    webhook_uri: String,
+    send_judgments_webhook: String,
+
+    payment_cents: Number,
+
+    require_worker_login: Boolean,
+    minimum_requirements: {
+      priority: Number,
+      min_score: Number
+    },
+
+    options: {
+      logical_aggregation: Boolean,
+      after_gold: String,
+      reject_at: String,
+      hide_correct_answers: false,
+      calibrated_unit_time: Number
+    }
   }
 });
 
-JobtemplateSchema.methods.createJob = function (callback) {
+JobtemplateSchema.methods.createJob = function (apiKey, callback) {
   var Job = mongoose.model('Job');
+
+  var data = this.data;
+  data.title = this.name;
+
+
   var job = new Job({
-    template: this._id,
-    crowdflower: this.template
+    name: 'Un-named',
+    apiKey: apiKey,
+    template: this._id
   });
 
-  job.save(function (job) {
-    job.crowdflowerUpdate()
-      .then(callback);
-  });
+  job.crowdflower = data;
+
+  job.save(callback);
 };
 
 mongoose.model('Jobtemplate', JobtemplateSchema);

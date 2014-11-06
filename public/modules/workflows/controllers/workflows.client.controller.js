@@ -56,6 +56,7 @@ angular.module('workflows').controller('WorkflowsController', ['$scope', '$state
 			var workflow = new Workflows ({
 				name: this.name,
         active: this.active ? this.active : false,
+        apiKey: this.apiKey,
         model: this.model,
         steps: this.steps
 
