@@ -26,47 +26,60 @@ var JobtemplateSchema = new Schema({
   model: String,
   fields: [String],
   data: {
-    id: String,
-    title: String,
     alias: String,
 
-    // Job Instructions
+    confidence_fields:[],
+
+    // Job Design
+    title: String,
+    instructions: String,
     cml: String,
     css: String,
     js: String,
-    instructions: String,
 
-    units_per_assignment: Number,
-    gold_per_assignment: Number,
-    pages_per_assignment: Number,
-
-
-    judgments_per_unit: Number,
+    // Worker Restrictions
     max_judgments_per_worker: Number,
-    max_judgments_per_unit: Number,
     max_judgments_per_ip: Number,
     minimum_account_age_seconds: Number,
-    min_unit_confidence: Number,
-    units_remain_finalized: Boolean,
-
-    webhook_uri: String,
-    send_judgments_webhook: String,
-
-    payment_cents: Number,
-
     require_worker_login: Boolean,
     minimum_requirements: {
-      priority: Number,
-      min_score: Number
+      min_score: Number,
+      skill_scores: {
+        // Only ever 1.
+        level_1_contributors: Number,
+        level_2_contributors: Number,
+        level_3_contributors: Number,
+        unapproved_crowd: Number
+      }
     },
 
+    included_countries:[ { name: String, code: String } ],
+    excluded_countries:[ { name: String, code: String } ],
+
+    // Assignment/Task Settings
+    units_per_assignment: Number,
+    pages_per_assignment: Number,
+
+    // Test Questions
+    gold_per_assignment: Number,
     options: {
-      logical_aggregation: Boolean,
       after_gold: String,
+      // What is the minimum percentage?
       reject_at: String,
-      hide_correct_answers: false,
-      calibrated_unit_time: Number
-    }
+      hide_correct_answers: Boolean
+    },
+
+    // Judgments
+    payment_cents: Number,
+    judgments_per_unit: Number, // Int
+    expected_judgments_per_unit: Number, // Int
+    max_judgments_per_unit: Number, // Int
+    variable_judgments_mode: String, // none, external, auto_confidence
+    min_unit_confidence: Number, // between 0 and 1
+    units_remain_finalized: Boolean,
+
+    // Gathering Results
+    webhook_uri: String
   }
 });
 
@@ -74,11 +87,9 @@ JobtemplateSchema.methods.createJob = function (apiKey, callback) {
   var Job = mongoose.model('Job');
 
   var data = this.data;
-  data.title = this.name;
-
 
   var job = new Job({
-    name: 'Un-named',
+    name: this.name + " Instance",
     apiKey: apiKey,
     template: this._id
   });

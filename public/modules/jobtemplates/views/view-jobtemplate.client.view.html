@@ -11,13 +11,75 @@
 		</a>
 	</div>
   <div>
-    <p><b>Data Type: </b>{{jobtemplate.model}}</p>
-    <b>CSS</b> <pre data-ng-bind="jobtemplate.template.css"></pre>
-    <b>JS</b><pre data-ng-bind="jobtemplate.template.js"></pre>
-    <b>CML</b><pre data-ng-bind="jobtemplate.template.cml"></pre>
-    Fields
+
+    <h4>Data Type</h4>
+    <pre data-ng-bind="jobtemplate.model"></pre>
+
+    <h4>Fields</h4>
     <ul class="list-group">
-      <li class="list-group-item" ng-repeat="field in jobtemplate.fields">{{field}}</li>
+      <li class="list-group-item" ng-repeat="field in jobtemplate.data.confidence_fields">{{field}}</li>
     </ul>
+
+    <h4>Webhook URI</h4>
+    <pre data-ng-bind="jobtemplate.data.webhook_uri"></pre>
+
+    <tabset>
+      <tab heading="Job Design">
+        <tabset type="pills" style="margin: 10px;">
+          <tab heading="Instructoins">
+            <pre data-ng-bind="jobtemplate.data.instructions"></pre>
+          </tab>
+
+          <tab heading="CML">
+          <pre data-ng-bind="jobtemplate.data.cml"></pre>
+          </tab>
+
+          <tab heading="CML">
+            <pre data-ng-bind="jobtemplate.data.css"></pre>
+          </tab>
+
+          <tab heading="JS">
+            <pre data-ng-bind="jobtemplate.data.js"></pre>
+          </tab>
+        </tabset>
+      </tab>
+      <tab heading="Test Questions">
+        <h5>Test Questions Per Task</h5>
+        <pre data-ng-bind="jobtemplate.data.gold_per_assignment"></pre>
+
+        <h5>Minimum Test Questions During Quiz Mode</h5>
+        <pre data-ng-bind="jobtemplate.data.options.after_gold"></pre>
+
+        <h5>Minimum Accuracy</h5>
+        <pre data-ng-bind="jobtemplate.data.options.reject_at"></pre>
+      </tab>
+
+      <tab heading="Workers">
+        <h5>Max Judgments per Worker</h5>
+        <pre data-ng-bind="jobtemplate.data.max_judgments_per_worker"></pre>
+
+        <h5>Max Judgments per IP</h5>
+        <pre data-ng-bind="jobtemplate.data.max_judgments_per_ip"></pre>
+      </tab>
+
+      <tab heading="Judgments">
+        <h5>Units per Task</h5>
+        <pre data-ng-bind="jobtemplate.data.units_per_assignment"></pre>
+
+        <h5>Payment per Task</h5>
+        <pre data-ng-bind="jobtemplate.data.payment_cents"></pre>
+
+        <h5>Expected Judgments per Unit</h5>
+        <pre data-ng-bind="jobtemplate.data.expected_judgments_per_unit"></pre>
+
+        <h5>Max Judgments per Unit</h5>
+        <pre data-ng-bind="jobtemplate.data.max_judgments_per_unit"></pre>
+
+        <h5>Minimum Unit Confidence</h5>
+        <pre data-ng-bind="jobtemplate.data.max_judgments_per_unit"></pre>
+      </tab>
+    </tabset>
+
+
   </div>
 </section>

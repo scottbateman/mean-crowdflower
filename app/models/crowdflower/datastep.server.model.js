@@ -92,7 +92,6 @@ DatastepSchema.methods.nextStep = function (callback) {
   var Unit = mongoose.model('Unit');
 
   var dataStep = this;
-  var result = dataStep.results[dataStep.results.length-1].results;
 
   Workflow.findById(this.workflow,
     function (err, wf) {
@@ -121,6 +120,7 @@ DatastepSchema.methods.nextStep = function (callback) {
         var field;
         var confidence;
         var accepted = true;
+        var result = dataStep.results[dataStep.results.length-1].results;
         console.log("Checking Steps (", step.requirements.length, ")");
         for (var i = 0; i < step.requirements.length; i++){
           field = step.requirements[i].field;

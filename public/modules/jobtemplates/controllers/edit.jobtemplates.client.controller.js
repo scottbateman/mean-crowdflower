@@ -10,7 +10,7 @@ angular.module('jobtemplates').controller('JTEditCtrl', ['$scope', '$stateParams
     $scope.jobtemplate = Jobtemplates.get(
       {  jobtemplateId: $stateParams.jobtemplateId  }, // Query
       function (jts) {
-        var fields = $scope.jobtemplate.fields;
+        var fields = $scope.jobtemplate.data.confidence_fields;
         for(var i=0; i<fields.length; i++){
           $scope.fields.push({
             value: fields[i]
@@ -32,7 +32,7 @@ angular.module('jobtemplates').controller('JTEditCtrl', ['$scope', '$stateParams
     $scope.update = function() {
       var jobtemplate = $scope.jobtemplate ;
       for (var i=0; i<$scope.fields.length; i++){
-        jobtemplate.fields[i] = $scope.fields[i].value;
+        jobtemplate.data.confidence_fields[i] = $scope.fields[i].value;
       }
 
       jobtemplate.$update(function() {

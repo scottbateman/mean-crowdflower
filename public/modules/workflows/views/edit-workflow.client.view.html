@@ -7,15 +7,18 @@
         <form class="form-horizontal" data-ng-submit="update()" novalidate>
             <fieldset>
                 <div class="form-group">
-                    <label class="control-label" for="name">Name</label>
                   <label class="control-label" for="name">Name</label>
                   <input type="text" data-ng-model="workflow.name" id="name" class="form-control" placeholder="Name" required>
 
-                  <label class="control-label">Active</label>
-                  <input type="checkbox" data-ng-model="workflow.active" value="active"><br/>
+                  <div>
+                    <label class="control-label">Active</label>
+                    <input type="checkbox" data-ng-model="workflow.active" value="active"
+                           tooltip="Active workflows have new data pushed into them automatically."
+                           tooltip-trigger="mouseenter" tooltip-placement="right">
+                  </div>
 
                   <label class="control-label">API Key</label>
-                  <input type="text" data-ng-model="workflow.apiKey" id="key" class="form-control" placeholder="Name" required>
+                  <input type="text" data-ng-model="workflow.apiKey" id="key" class="form-control" placeholder="Not shown for security purposes." required>
 
 
                   <label class="control-label" for="name">Model</label>
@@ -27,13 +30,13 @@
                   <h3>Steps</h3>
                   <div class="well">
                     <div ng-repeat="step in workflow.steps" id="steps" class="panel panel-primary">
-
                       <div class="panel-heading">
                         Step {{$index}}
                         <!-- "Remove Step" button. -->
                         <button type="button"
                                 ng-click="removeStep($index)"
-                                class="btn-xs btn-default pull-right">
+                                class="btn-xs btn-default pull-right"
+                                tooltip="Remove step" tooltip-trigger="mouseenter">
                           <span class="glyphicon glyphicon-minus"></span>
                         </button>
                       </div>
@@ -51,23 +54,30 @@
                         <label class="control-label">Queue Limit: </label>
                         <input type="text" data-ng-model="step.queueLimit" class="form-control">
 
-                        <label class="control-label"><b>PASS</b> - Go To Step: </label>
-                        <select data-ng-model="step.nextPass" class="form-control" required>
-                          <option ng-repeat="next in workflow.steps" value="{{$index}}">{{$index}}</option>
-                          <option value="-1">DONE</option>
-                        </select>
-
-                        <label class="control-label"><b>FAILS</b> - Go To Step: </label>
-                        <select data-ng-model="step.nextFail" class="form-control" required>
-                          <option ng-repeat="next in workflow.steps" value="{{$index}}">{{$index}}</option>
-                          <option value="-1">DONE</option>
-                        </select>
-
-                        <h4>Requirements</h4>
+                        <h4 ">Requirements</h4>
                         <div ng-repeat="requirement in step.requirements">
                           <label class="control-label">{{requirement.field}}</label>
-                          <input type="text" data-ng-model="requirement.confidence" required>
+                          <input type="text" data-ng-model="requirement.confidence" required
+                                 tooltip="The minimum confidence for the '{{requirement.field}}' question required in order to pass this step."
+                                 tooltip-trigger="mouseenter">
                         </div>
+
+                        <div>
+                          <h4>Next Step</h4>
+
+                          <label class="control-label">PASS</label>
+                          <select data-ng-model="step.nextPass" class="form-control" required>
+                            <option ng-repeat="next in workflow.steps" value="{{$index}}">{{$index}}</option>
+                            <option value="-1">DONE</option>
+                          </select>
+
+                          <label class="control-label">FAIL</label>
+                          <select data-ng-model="step.nextFail" class="form-control" required>
+                            <option ng-repeat="next in workflow.steps" value="{{$index}}">{{$index}}</option>
+                            <option value="-1">DONE</option>
+                          </select>
+                        </div>
+
                       </div>
                     </div>
                     <button type="button" ng-click="addStep()" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>

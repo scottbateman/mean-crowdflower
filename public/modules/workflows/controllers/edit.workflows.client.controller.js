@@ -17,13 +17,6 @@ angular.module('workflows').controller('WorkflowsEditCtrl',
       }
     };
 
-    $scope.loadStepTemplate = function (step) {
-      alert('loadStepTemplate');
-      step.templateObject = Jobtemplates.get({
-        jobtemplateId: step.template
-      });
-    };
-
     $scope.prepEdit = function () {
       $scope.loadTemplates($scope.workflow.model);
     };

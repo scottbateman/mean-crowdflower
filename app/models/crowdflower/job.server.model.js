@@ -32,24 +32,58 @@ var JobSchema = new Schema({
   },
   crowdflower: {
     id: String,
-    title: String,
-    alias: String,
+    //alias: String,
 
     // Job Instructions
+    title: String,
+    instructions: String,
     cml: String,
     css: String,
     js: String,
-    instructions: String,
 
+    // Worker Restrictions
     max_judgments_per_worker: Number,
+    max_judgments_per_ip: Number,
+    minimum_account_age_seconds: Number,
+    require_worker_login: Boolean,
+    minimum_requirements: {
+      min_score: Number,
+      skill_scores: {
+        // Only ever 1.
+        level_1_contributors: Number,
+        level_2_contributors: Number,
+        level_3_contributors: Number,
+        unapproved_crowd: Number
+      }
+    },
+    //
+    included_countries:[ { name: String, code: String } ],
+    excluded_countries:[ { name: String, code: String } ],
 
+    // Assignment/Task Settings
+    units_per_assignment: Number,
+    pages_per_assignment: Number,
+
+    // Test Questions
+    gold_per_assignment: Number,
     options: {
-      logical_aggregation: Boolean,
       after_gold: String,
+      // What is the minimum percentage?
       reject_at: String,
-      hide_correct_answers: false,
-    }
+      hide_correct_answers: Boolean
+    },
 
+    // Judgments
+    payment_cents: Number,
+    judgments_per_unit: Number, // Int
+    expected_judgments_per_unit: Number, // Int
+    max_judgments_per_unit: Number, // Int
+    variable_judgments_mode: String, // none, external, auto_confidence
+    min_unit_confidence: Number, // between 0 and 1
+    units_remain_finalized: Boolean,
+
+    //// Gathering Results
+    webhook_uri: String
   }
 });
 

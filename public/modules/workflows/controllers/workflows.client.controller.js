@@ -76,20 +76,7 @@ angular.module('workflows').controller('WorkflowsController', ['$scope', '$state
 		};
 
 		// Remove existing Workflow
-		$scope.remove = function( workflow ) {
-			if ( workflow ) { workflow.$remove();
 
-				for (var i in $scope.workflows ) {
-					if ($scope.workflows [i] === workflow ) {
-						$scope.workflows.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.workflow.$remove(function() {
-					$location.path('workflows');
-				});
-			}
-		};
 
 		// Update existing Workflow
 		$scope.update = function() {

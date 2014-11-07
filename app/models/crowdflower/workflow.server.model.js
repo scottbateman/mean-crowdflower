@@ -205,6 +205,7 @@ WorkflowSchema.methods.pushStepQueue = function (stepIndex, objectId, callback) 
       wf.uploadStepQueue(stepIndex, callback);
     }
     else {
+      console.log("why?");
       callback({});
     }
   }.bind(this));
@@ -232,6 +233,7 @@ WorkflowSchema.methods.uploadStepQueue = function (stepIndex, callback) {
   var Jobtemplate = mongoose.model('Jobtemplate');
   var Job = mongoose.model('Job');
 
+  var workflow = this;
   var apiKey = this.apiKey;
 
   var step = this.steps[stepIndex];
@@ -265,6 +267,8 @@ WorkflowSchema.methods.uploadStepQueue = function (stepIndex, callback) {
                     if (queueStrings.length === queue.length) {
                       // Merge all strings together and upload them to the job.
                       job.uploadString(queueStrings.join(''), callback);
+                      workflow.steps[stepIndex].queue = [];
+                      workflow.save();
 
                     }
                   }

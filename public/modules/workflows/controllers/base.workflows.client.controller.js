@@ -9,6 +9,12 @@ angular.module('workflows').controller('WorkflowsBaseCtrl', ['$scope', '$statePa
       console.log($scope);
     };
 
+    $scope.loadStepTemplate = function (step) {
+      step.templateObject = Jobtemplates.get({
+        jobtemplateId: step.template
+      });
+    };
+
     // Find a list of Workflows
     $scope.find = function() {
       $scope.workflows = Workflows.query();
