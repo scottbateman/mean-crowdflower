@@ -14,9 +14,7 @@ angular.module('jobtemplates').controller('JTBaseCtrl', ['$scope', '$stateParams
 
     // Find existing Jobtemplate
     $scope.findOne = function() {
-      $scope.jobtemplate = Jobtemplates.get({
-        jobtemplateId: $stateParams.jobtemplateId
-      });
+
       console.log($scope);
     };
   }

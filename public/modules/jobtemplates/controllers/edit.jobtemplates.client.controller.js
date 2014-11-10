@@ -4,36 +4,25 @@
 angular.module('jobtemplates').controller('JTEditCtrl', ['$scope', '$stateParams', '$location', 'Authentication', 'Jobtemplates',
   function($scope, $stateParams, $location, Authentication, Jobtemplates ) {
     $scope.authentication = Authentication;
-    $scope.fields = [];
 
-
-    $scope.jobtemplate = Jobtemplates.get(
-      {  jobtemplateId: $stateParams.jobtemplateId  }, // Query
-      function (jts) {
-        var fields = $scope.jobtemplate.data.confidence_fields;
-        for(var i=0; i<fields.length; i++){
-          $scope.fields.push({
-            value: fields[i]
-          });
-        }
+    $scope.jobtemplate = Jobtemplates.get({
+      jobtemplateId: $stateParams.jobtemplateId
     });
 
     $scope.addField = function () {
-      $scope.fields.push({value:''});
+      $scope.jobtemplate.template.confidence_fields.push("");
+      console.log($scope.jobtemplate.template.confidence_fields);
     };
 
     $scope.removeField = function (index) {
       if(index>-1){
-        $scope.fields.splice(index, 1);
+        $scope.jobtemplate.template.confidence_fields.splice(index, 1);
       }
     };
 
     // Update existing Jobtemplate
     $scope.update = function() {
       var jobtemplate = $scope.jobtemplate ;
-      for (var i=0; i<$scope.fields.length; i++){
-        jobtemplate.data.confidence_fields[i] = $scope.fields[i].value;
-      }
 
       jobtemplate.$update(function() {
         $location.path('jobtemplates/' + jobtemplate._id);

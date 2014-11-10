@@ -42,45 +42,47 @@ var JobSchema = new Schema({
     js: String,
 
     // Worker Restrictions
-    max_judgments_per_worker: Number,
-    max_judgments_per_ip: Number,
-    minimum_account_age_seconds: Number,
-    require_worker_login: Boolean,
-    minimum_requirements: {
-      min_score: Number,
-      skill_scores: {
+    max_judgments_per_worker: { type: Number, default: null},
+    max_judgments_per_ip: { type: Number, default: null},
+    //minimum_requirements: {
+      //min_score: Number,
+      //skill_scores: {
         // Only ever 1.
-        level_1_contributors: Number,
-        level_2_contributors: Number,
-        level_3_contributors: Number,
-        unapproved_crowd: Number
-      }
-    },
+        //level_1_contributors: { type:Number, default:,
+        //level_2_contributors: Number,
+        //level_3_contributors: Number,
+        //unapproved_crowd: Number
+      //}
+    //},
     //
     included_countries:[ { name: String, code: String } ],
     excluded_countries:[ { name: String, code: String } ],
 
     // Assignment/Task Settings
-    units_per_assignment: Number,
-    pages_per_assignment: Number,
+    units_per_assignment: {type: Number, default: 10},
+    pages_per_assignment: {type: Number, default: 1},
 
     // Test Questions
-    gold_per_assignment: Number,
-    options: {
-      after_gold: String,
-      // What is the minimum percentage?
-      reject_at: String,
-      hide_correct_answers: Boolean
-    },
+    //gold_per_assignment: {type: Number, default: 1},
+    //options: {
+    //  after_gold: { type: String, default: "10"},
+    //  What is the minimum percentage?
+      //reject_at: { type: String, default: "70"},
+      //hide_correct_answers: { type: Boolean, default: true}
+    //},
 
     // Judgments
-    payment_cents: Number,
-    judgments_per_unit: Number, // Int
-    expected_judgments_per_unit: Number, // Int
-    max_judgments_per_unit: Number, // Int
-    variable_judgments_mode: String, // none, external, auto_confidence
-    min_unit_confidence: Number, // between 0 and 1
-    units_remain_finalized: Boolean,
+    payment_cents: { type: Number, default: 1 },
+    judgments_per_unit: { type: Number, default: 2}, // Int
+    variable_judgments_mode: {
+    //  none, external, auto_confidence
+      type: String,
+      default: 'auto_confidence'
+    },
+    expected_judgments_per_unit: { type: Number, default: 2}, // Int
+    max_judgments_per_unit: { type: Number, default: 4}, // Int
+
+    min_unit_confidence: { type: Number, default: 0.75}, // between 0 and 1
 
     //// Gathering Results
     webhook_uri: String
@@ -99,17 +101,18 @@ JobSchema.methods.connect = function () {
   var JOB = this;
 
   if (this.crowdflower.id) {
-    return cf.fetchJob(this.crowdflower.id);
+    return cf.fetchJob(this.crowdflower.id)
+      .then(syncJobs);
   }
   else{
     var jobData = this.toObject().crowdflower;
-    return cf.createJob(jobData).then(
-      function (job) {
-        JOB.crowdflower.id = job.id;
-        JOB.save();
-        return job;
-      }
-    );
+    return cf.createJob(jobData).then(syncJobs);
+  }
+
+  function syncJobs(job){
+    JOB.crowdflower = job;
+    JOB.save();
+    return job;
   }
 };
 

@@ -107,7 +107,6 @@ DatastepSchema.methods.nextStep = function (callback) {
          * @todo push data to origin
          */
           }
-        dataStep.save();
       };
 
       if (dataStep.currentStep === null) {

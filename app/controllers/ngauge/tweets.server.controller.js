@@ -100,18 +100,13 @@ exports.delete = function(req, res) {
  * List of Tweets
  */
 exports.list = function(req, res) {
-  Tweet.find().sort('-created').populate('user', 'displayName').exec(
+  Tweet.find().sort('-created').exec(
     function(err, tweets) {
 		if (err) {
 			return res.status(400).send({
 				message: errorHandler.getErrorMessage(err)
 			});
 		} else {
-
-      for (var i= 0; i < tweets.length; i++){
-        tweets[i] = tweets[i].data;
-      }
-
 			res.jsonp(tweets);
 		}
 	});
@@ -173,10 +168,10 @@ exports.createGold= function (req, res) {
 /**
  * Tweet middleware
  */
-exports.tweetByID = function(req, res, next, id) { Tweet.findById(id).populate('user', 'displayName').exec(function(err, tweet) {
+exports.tweetByID = function(req, res, next, id) { Tweet.findById(id).exec(function(err, tweet) {
 		if (err) return next(err);
 		if (! tweet) return next(new Error('Failed to load Tweet ' + id));
-		req.tweet = tweet.data ;
+		req.tweet = tweet;
 		next();
 	});
 };

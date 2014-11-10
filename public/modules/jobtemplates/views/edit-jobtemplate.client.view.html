@@ -1,132 +1,139 @@
-<section ng-controller="JTBaseCtrl">
-<section ng-controller="JTEditCtrl" ng-init="findOne();">
-    <div class="page-header">
-        <h1>Edit Jobtemplate</h1>
+<div class="page-header">
+  <h1>Edit Jobtemplate</h1>
+</div>
+<div class="col-md-12">
+  <form class="form-horizontal" data-ng-submit="update()" novalidate>
+    <div class="form-group">
+      <div class="controls">
+
+        <!-- Template Name -->
+        <label class="control-label" for="name">Template Name</label>
+        <input type="text" class="form-control" required
+               data-ng-model="jobtemplate.name">
+
+        <!-- Data Model -->
+        <label class="control-label" for="models">Data Type</label>
+        <select class="form-control" data-ng-model="jobtemplate.model" required>
+          <option ng-repeat="m in models">{{m}}</option>
+        </select>
+
+        <!-- Webhook @todo this should be generated automatically. -->
+        <label class="control-label">Webhook URI</label>
+        <input type="text" class="form-control"
+               data-ng-model="jobtemplate.template.webhook_uri">
+
+        <!-- Confidence Fields -->
+        <label class="control-label">Confidence Fields</label>
+        <div class="well">
+          <div data-ng-repeat="field in jobtemplate.template.confidence_fields track by $index" id="fields" class="panel panel-primary">
+            <!-- Field Index -->
+            <div class="panel-heading">
+              Field {{$index}}
+
+              <!-- Remove Field Button -->
+              <button type="button" ng-click="removeField($index)" style="float:right" class="btn-xs btn-default"> <span class="glyphicon glyphicon-minus"></span> </button>
+            </div>
+
+            <!-- Field Name -->
+            <div class="panel-body">
+              <input type="text" data-ng-model="jobtemplate.template.confidence_fields[$index]" class="form-control">
+            </div>
+          </div>
+
+          <!-- Add Another Field -->
+          <button type="button" ng-click="addField()" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>
+        </div>
+
+        <!-- Other Settings -->
+        <tabset>
+          <!-- First Tab -->
+          <tab heading="Job Design">
+
+            <label class="control-label">Job Title</label>
+            <input type="text" data-ng-model="jobtemplate.template.title"
+                   class="form-control" required>
+
+            <label class="control-label">Instructions</label>
+            <textarea type="text" data-ng-model="jobtemplate.template.instructions"
+                      class="form-control" required></textarea>
+
+            <label class="control-label">CML</label>
+            <textarea type="text" data-ng-model="jobtemplate.template.cml"
+                      class="form-control" required></textarea>
+
+            <label class="control-label">CSS</label>
+            <textarea type="text" data-ng-model="jobtemplate.template.css"
+                      class="form-control" required></textarea>
+
+            <label class="control-label">JS</label>
+            <textarea type="text" data-ng-model="jobtemplate.template.js"
+                      class="form-control" required></textarea>
+          </tab>
+
+          <!-- Second Tab -->
+          <tab heading="Test Questions">
+            <label class="control-label">Test Questions per Task</label>
+            <input type="text"  class="form-control"
+                   data-ng-model="jobtemplate.template.gold_per_assignment">
+
+            <label class="control-label">Quiz Mode</label>
+            <input type="checkbox"
+                   data-ng-model="jobtemplate.template.options.front_load">
+            <br/>
+
+            <label class="control-label"># of Tests During Quiz</label>
+            <input type="text"  class="form-control"
+                   data-ng-model="jobtemplate.template.options.after_gold">
+
+            <label class="control-label">Minimum Accuracy</label>
+            <input type="text"  class="form-control"
+                   data-ng-model="jobtemplate.template.options.reject_at">
+          </tab>
+
+          <!-- Third Tab -->
+          <tab heading="Workers">
+            <label class="control-label">Max Judgments per Worker</label>
+            <input type="text" data-ng-model="jobtemplate.template.max_judgments_per_worker"
+                   id="max_judgments_per_worker" class="form-control" required>
+
+            <label class="control-label">Max Judgments per IP</label>
+            <input type="text" data-ng-model="jobtemplate.template.max_judgments_per_ip"
+                   id="max_judgments_per_ip" class="form-control" required>
+            <!-- @todo add in skill scores -->
+
+          </tab>
+
+          <!-- Judgments -->
+          <tab heading="Judgments">
+            <label class="control-label">Units per Task</label>
+            <input type="text" data-ng-model="jobtemplate.template.units_per_assignment"
+                   class="form-control">
+
+            <label class="control-label">Payment per Task (cents)</label>
+            <input type="text" data-ng-model="jobtemplate.template.payment_cents"
+                   class="form-control">
+
+            <label class="control-label">Expected Judgments per Unit</label>
+            <input type="text" class="form-control"
+                   data-ng-model="jobtemplate.template.expected_judgments_per_unit" >
+
+            <label class="control-label">Max Judgments per Unit</label>
+            <input type="text" class="form-control"
+                   data-ng-model="jobtemplate.template.max_judgments_per_unit">
+
+            <label class="control-label">Minimum Unit Confidence</label>
+            <input type="text" data-ng-model="jobtemplate.template.min_unit_confidence"
+                   id="min_unit_confidence" class="form-control" required>
+
+          </tab>
+        </tabset>
+      </div>
     </div>
-    <div class="col-md-12">
-        <form class="form-horizontal" data-ng-submit="update()" novalidate>
-            <fieldset>
-                <div class="form-group">
-                    <div class="controls">
-                      <label class="control-label" for="name">Template Name</label>
-                      <input type="text" data-ng-model="jobtemplate.name" id="name" class="form-control" placeholder="Name" required>
-
-                      <label class="control-label" for="models">Data Type</label>
-                      <select id="models" data-ng-model="jobtemplate.model" class="form-control" required>
-                        <option ng-repeat="m in models">{{m}}</option>
-                      </select>
-
-                      <label class="control-label">Webhook URI</label>
-                      <input type="text" data-ng-model="jobtemplate.data.webhook_uri"
-                             id="webhook_uri" class="form-control" required>
-
-                      <label class="control-label">Confidence Fields</label>
-                      <div class="well">
-                        <div data-ng-repeat="field in fields" id="fields" class="panel panel-primary">
-                          <div class="panel-heading">
-                            Field {{$index}}
-                            <button type="button" ng-click="removeField($index)" style="float:right" class="btn-xs btn-default">
-                              <span class="glyphicon glyphicon-minus"></span>
-                            </button>
-                          </div>
-                          <div class="panel-body">
-                            <input type="text" data-ng-model="field.value" class="form-control">
-                          </div>
-                        </div>
-                        <button type="button" ng-click="addField()" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>
-                      </div>
-
-                      <tabset>
-                        <!-- First Tab -->
-                      <tab heading="Job Design">
-
-                      <label class="control-label" for="name">Job Title</label>
-                      <input type="text" data-ng-model="jobtemplate.data.title" id="title" class="form-control" placeholder="Name" required>
-
-                      <label class="control-label" for="cml">Instructions</label>
-                      <textarea type="text" data-ng-model="jobtemplate.data.instructions" id="instructions" class="form-control" required></textarea>
-
-                      <label class="control-label" for="cml">CML</label>
-                      <textarea type="text" data-ng-model="jobtemplate.data.cml" id="cml" class="form-control" required></textarea>
-
-                      <label class="control-label" for="css">CSS</label>
-                      <textarea type="text" data-ng-model="jobtemplate.data.css" id="css" class="form-control" required></textarea>
-
-                      <label class="control-label" for="js">JS</label>
-                      <textarea type="text" data-ng-model="jobtemplate.data.js" id="js" class="form-control" required></textarea>
-                      </tab>
-
-                        <!-- Second Tab -->
-                      <tab heading="Test Questions">
-                      <label class="control-label">Test Questions Per Task</label>
-                      <input type="text" data-ng-model="jobtemplate.data.gold_per_assignment"
-                             id="gpa" class="form-control" required>
-
-                      <label class="control-label">Minimum Test Questions During Quiz Mode</label>
-                      <input type="text" data-ng-model="jobtemplate.data.options.after_gold"
-                             id="after_gold" class="form-control" required>
-
-                      <label class="control-label">Minimum Accuracy</label>
-                      <input type="text" data-ng-model="jobtemplate.data.options.reject_at"
-                             id="min_accuracy" class="form-control" required>
-                      </tab>
-
-                        <!-- Third Tab -->
-                        <tab heading="Workers">
-                          <label class="control-label">Max Judgments per Worker</label>
-                          <input type="text" data-ng-model="jobtemplate.data.max_judgments_per_worker"
-                                 id="max_judgments_per_worker" class="form-control" required>
-
-                          <label class="control-label">Max Judgments per IP</label>
-                          <input type="text" data-ng-model="jobtemplate.data.max_judgments_per_ip"
-                                 id="max_judgments_per_ip" class="form-control" required>
-                          <!-- @todo add in skill scores -->
-
-                        </tab>
-
-                        <!-- Judgments -->
-                        <tab heading="Judgments">
-                          <label class="control-label">Units per Task</label>
-                          <input type="text" data-ng-model="jobtemplate.data.units_per_assignment"
-                                 id="units_per_task" class="form-control" required>
-
-                          <label class="control-label">Payment per Task (cents)</label>
-                          <input type="text" data-ng-model="jobtemplate.data.payment_cents"
-                                 id="payment_cents" class="form-control" required>
-
-                          <label class="control-label">Expected Judgments per Unit</label>
-                          <input type="text" data-ng-model="jobtemplate.data.expected_judgments_per_unit"
-                                 id="judgments_per_unit" class="form-control" required>
-
-                          <label class="control-label">Max Judgments per Unit</label>
-                          <input type="text" data-ng-model="jobtemplate.data.max_judgments_per_unit"
-                                 id="max_per_unit" class="form-control" required>
-
-                          <label class="control-label">Minimum Unit Confidence</label>
-                          <input type="text" data-ng-model="jobtemplate.data.min_unit_confidence"
-                                 id="min_unit_confidence" class="form-control" required>
-
-                        </tab>
-                      </tabset>
-                      <!--<div>-->
-                        <!--<h2>Contributors</h2>-->
-                      <!--</div>-->
-                      <!--<div>-->
-                        <!--<h2>Job Quality</h2>-->
-
-                      <!--</div>-->
-
-
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Update" class="btn btn-default">
-                </div>
-                <div data-ng-show="error" class="text-danger">
-                  <strong data-ng-bind="error"></strong>
-                </div>
-            </fieldset>
-        </form>
+    <div class="form-group">
+      <input type="submit" value="Update" class="btn btn-default">
     </div>
-</section>
-</section>
+    <div data-ng-show="error" class="text-danger">
+      <strong data-ng-bind="error"></strong>
+    </div>
+  </form>
+</div>

@@ -11,7 +11,8 @@ angular.module('jobtemplates').config(['$stateProvider',
 		}).
 		state('createJobtemplate', {
 			url: '/jobtemplates/create',
-			templateUrl: 'modules/jobtemplates/views/create-jobtemplate.client.view.html'
+			templateUrl: 'modules/jobtemplates/views/create-jobtemplate.client.view.html',
+      controller: 'JTCreateCtrl'
 		}).
 		state('viewJobtemplate', {
 			url: '/jobtemplates/:jobtemplateId',
