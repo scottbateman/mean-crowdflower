@@ -36,8 +36,8 @@ var JobtemplateSchema = new Schema({
     js: String,
 
     // Worker Restrictions
-    max_judgments_per_worker: { type: Number, default: null},
-    max_judgments_per_ip: { type: Number, default: null},
+    max_judgments_per_worker: { type: Number },
+    max_judgments_per_ip: { type: Number },
     //minimum_requirements: {
     //min_score: Number,
     //skill_scores: {
@@ -89,15 +89,16 @@ var JobtemplateSchema = new Schema({
 JobtemplateSchema.methods.createJob = function (apiKey, callback) {
   var Job = mongoose.model('Job');
 
-  var data = this.data;
+  var data = this.toObject().template;
 
   var job = new Job({
     name: this.name + " Instance",
     apiKey: apiKey,
-    template: this._id
+    template: this._id,
+    crowdflower: data
   });
 
-  job.crowdflower = data;
+  console.log("Jobtemplate Schema - Creating Job Instance ");
 
   job.save(callback);
 };

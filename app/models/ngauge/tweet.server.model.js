@@ -47,4 +47,28 @@ var TweetSchema = new Schema({
   }
 });
 
+TweetSchema.methods.pushToWorkflow = function (wf_id) {
+  var Datastep = mongoose.model('Datastep');
+  var t_id = this._id;
+  
+  Datastep.find({data: t_id, workflow: wf_id})
+    .exec(function (err, ds) {
+      if (err) { console.error(err); }
+      else if (ds.length !== 0){
+        console.error(new Error('This tweet is already in this workflow'));
+      }
+      else{
+        ds = new Datastep({
+          workflow: wf_id,
+          data: t_id,
+          units: [],
+          currentStep: null,
+          finished: false
+        });
+        ds.save();
+        ds.nextStep();
+      }
+    });
+};
+
 mongoose.model('Tweet', TweetSchema);

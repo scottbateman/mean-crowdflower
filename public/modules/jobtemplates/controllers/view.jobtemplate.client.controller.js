@@ -2,10 +2,12 @@
 
 angular.module('jobtemplates')
   .controller('JTViewCtrl',
-  ['$scope', '$stateParams', 'Jobtemplates',
-    function($scope, $stateParams, $location, Authentication, Jobtemplates ) {
+  ['$scope', '$stateParams', 'Authentication', 'Jobtemplates',
+    function($scope, $stateParams,  Authentication, Jobtemplates ) {
+      $scope.authentication = Authentication;
 
-      $scope.findOne
-
+      $scope.jobtemplate = Jobtemplates.get({
+        jobtemplateId: $stateParams.jobtemplateId
+      });
     }
   ]);

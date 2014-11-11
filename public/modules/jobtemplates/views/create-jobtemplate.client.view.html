@@ -76,6 +76,7 @@
 
             <!-- Second Tab -->
             <tab heading="Test Questions">
+              <!-- @todo Make note that this will only be set if there are test questions. -->
               <label class="control-label">Test Questions per Task</label>
               <input type="text"  class="form-control"
                      data-ng-model="jobtemplate.template.gold_per_assignment">
@@ -85,10 +86,14 @@
                      data-ng-model="jobtemplate.template.options.front_load">
               <br/>
 
+              <!-- @todo only shows up if QuizMode is on. -->
+              <!-- @todo greater than 0 -->
               <label class="control-label"># of Tests During Quiz</label>
               <input type="text"  class="form-control"
                      data-ng-model="jobtemplate.template.options.after_gold">
 
+              <!-- @todo only shows up if QuizMode is on. -->
+              <!-- @todo Between 0 and 100 -->
               <label class="control-label">Minimum Accuracy</label>
               <input type="text"  class="form-control"
                      data-ng-model="jobtemplate.template.options.reject_at">
@@ -96,10 +101,12 @@
 
             <!-- Third Tab -->
             <tab heading="Workers">
+              <!-- @todo null or greater than 0 -->
               <label class="control-label">Max Judgments per Worker</label>
               <input type="text" data-ng-model="jobtemplate.template.max_judgments_per_worker"
                      id="max_judgments_per_worker" class="form-control" required>
 
+              <!-- @todo null or greater than 0 -->
               <label class="control-label">Max Judgments per IP</label>
               <input type="text" data-ng-model="jobtemplate.template.max_judgments_per_ip"
                      id="max_judgments_per_ip" class="form-control" required>
@@ -109,22 +116,27 @@
 
             <!-- Judgments -->
             <tab heading="Judgments">
+              <!-- @todo 0 or greater -->
               <label class="control-label">Units per Task</label>
               <input type="text" data-ng-model="jobtemplate.template.units_per_assignment"
                      class="form-control">
 
+              <!-- @todo greater than 0 -->
               <label class="control-label">Payment per Task (cents)</label>
               <input type="text" data-ng-model="jobtemplate.template.payment_cents"
                      class="form-control">
 
+              <!-- @todo 1 or greater -->
               <label class="control-label">Expected Judgments per Unit</label>
               <input type="text" class="form-control"
                      data-ng-model="jobtemplate.template.expected_judgments_per_unit" >
 
+              <!-- @todo Greater than the Expected Judgments per Unit -->
               <label class="control-label">Max Judgments per Unit</label>
               <input type="text" class="form-control"
                      data-ng-model="jobtemplate.template.max_judgments_per_unit">
 
+              <!-- @todo Between 0 and 1 -->
               <label class="control-label">Minimum Unit Confidence</label>
               <input type="text" data-ng-model="jobtemplate.template.min_unit_confidence"
                      id="min_unit_confidence" class="form-control" required>

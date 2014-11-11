@@ -1,21 +1,26 @@
-<section data-ng-controller="JobtemplatesController" data-ng-init="find()">
-  <div class="page-header">
-      <h1>Jobtemplates</h1>
-  </div>
-  <div>
-    Search: <input ng-model="query">
-  </div>
-  <br/>
-  <div class="list-group">
-    <a data-ng-repeat="jobtemplate in jobtemplates | filter:query" data-ng-href="#!/jobtemplates/{{jobtemplate._id}}" class="list-group-item">
-      <h4 class="list-group-item-heading" data-ng-bind="jobtemplate.name"></h4>
-      <small>
-        <b>Datatype: </b>{{jobtemplate.model}}<br/>
-        <b>Fields: </b><span ng-repeat="field in jobtemplate.fields">{{field}},</span>
-      </small>
+<div class="page-header">
+    <h1>Jobtemplates</h1>
+</div>
+<div class="row">
+  Search: <input ng-model="query">
+  <div class="pull-right">
+    <a class="btn btn-default " href="/#!/jobtemplates/create">
+      <i class="glyphicon glyphicon-plus">Add Job Template</i>
     </a>
   </div>
-  <div class="alert alert-warning text-center" data-ng-hide="!jobtemplates.$resolved || jobtemplates.length">
-    No Jobtemplates yet, why don't you <a href="/#!/jobtemplates/create">create one</a>?
+</div>
+    <br/>
+<div class="row list-group">
+  <div data-ng-repeat="jobtemplate in jobtemplates | filter:query">
+      <a  data-ng-href="#!/jobtemplates/{{jobtemplate._id}}" class="list-group-item">
+        <h4 class="list-group-item-heading" data-ng-bind="jobtemplate.name"></h4>
+        <small>
+          <b>Datatype: </b>{{jobtemplate.model}}<br/>
+          <b>Fields: </b><span ng-repeat="field in jobtemplate.fields">{{field}},</span>
+        </small>
+      </a>
   </div>
-</section>
+</div>
+<div class="alert alert-warning text-center" data-ng-hide="!jobtemplates.$resolved || jobtemplates.length">
+  No Jobtemplates yet, why don't you <a href="/#!/jobtemplates/create">create one</a>?
+</div>

@@ -107,7 +107,7 @@ exports.hasAuthorization = function(req, res, next) {
 
 exports.ingestData = function (req, res, next) {
   //GOOD
-  req.workflow.ingestData(req.body, function (err, data) {
+  req.workflow.ingestNewData(req.body, function (err, data) {
     res.jsonp({data: data});
   });
 };

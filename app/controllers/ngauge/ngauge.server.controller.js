@@ -8,21 +8,40 @@ var mongoose = require('mongoose'),
     _ = require('lodash');
 
 exports.ngaugePost = function(req, res) {
-  // I think this process is fairly well defined start to finish.
-  /** @todo Make sure this is for real. */
+  var Tweet = mongoose.model('Tweet');
   var tweets = req.body;
 
-  /** @todo replace with an actual id. */
-  var wfid = 1;
+  // Make sure it's in an array.
+  if (!(tweets instanceof Array)){
+    tweets = [tweets];
+  }
 
-  Workflow.findById(wfid)
-    .exec(function (wf) {
-      /** @todo Do some checks to make sure the Workflow is found. */
-      wf.ingestData(tweets);
+  // Create Tweets.
+  for (var i=0; i<tweets.length; i++){
+    tweets[i] = new Tweet(tweets[i]);
+    tweets[i].save();
+  }
 
-      /** @todo What should be returned? */
-      res.json({message: 'STUB'});
+  // Find all active Workflows that work on Tweets.
+  Workflow.find({active: true, model: 'Tweet'})
+    .exec(function (err, workflows) {
+      /** @todo A whole bunch of error checking. */
+
+      // For each workflow found.
+      for(var i = 0; i < workflows.length; i++){
+
+        // Push each tweet into the workflow.
+        for (var j=0; j < tweets.length; j++){
+          tweets[i].pushToWorkflow(workflows[i]._id);
+        }
+      }
     });
+
+  res.status(200).jsonp({message: 'Upload complete.'});
+};
+
+exports.ngaugeGet = function (req, res) {
+
 };
 
 
