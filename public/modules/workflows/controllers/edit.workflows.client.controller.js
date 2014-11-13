@@ -5,7 +5,7 @@ angular.module('workflows').controller('WorkflowsEditCtrl',
   ['$scope', '$stateParams', '$location', 'Authentication', 'Workflows', 'Jobtemplates',
   function($scope, $stateParams, $location, Authentication, Workflows, Jobtemplates) {
     $scope.authentication = Authentication;
-    $scope.models = ['Tweet'];
+    $scope.models = [];
 
     $scope.addStep = function () {
       $scope.workflow.steps.push({});

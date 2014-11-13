@@ -26,11 +26,9 @@ angular.module('workflows').controller('WorkflowsController', ['$scope', '$state
 
     $scope.prepCreate= function () {
       $scope.steps = [];
-      $scope.models = ['Tweet', 'Farts'];
     };
 
     $scope.prepEdit = function () {
-      $scope.models = ['Tweet', 'Farts'];
       $scope.loadTemplates($scope.workflow.model);
     };
 

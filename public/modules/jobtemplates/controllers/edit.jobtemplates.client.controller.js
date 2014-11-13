@@ -4,7 +4,8 @@
 angular.module('jobtemplates').controller('JTEditCtrl', ['$scope', '$stateParams', '$location', 'Authentication', 'Jobtemplates',
   function($scope, $stateParams, $location, Authentication, Jobtemplates ) {
     $scope.authentication = Authentication;
-    $scope.models = ['Tweet'];
+    /** Fetch list of data models. */
+    $scope.models = [];
 
     $scope.jobtemplate = Jobtemplates.get({
       jobtemplateId: $stateParams.jobtemplateId

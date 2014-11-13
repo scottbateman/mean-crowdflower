@@ -19,10 +19,9 @@ var UnitSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Job'
   },
-  tweet: {
-    type: Schema.ObjectId,
-    ref: 'Tweet'
-  },
+  data: {
+    type: Schema.ObjectId
+  }
   //crowdflower: {}/** @todo Fill with info from other places. */
 	//user: {
 	//	type: Schema.ObjectId,

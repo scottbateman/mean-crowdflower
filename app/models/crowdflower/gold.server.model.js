@@ -24,9 +24,8 @@ var GoldSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'Jobtemplate'
   },
-  tweet: {
-    type: Schema.ObjectId,
-    ref: 'Tweet'
+  data: {
+    type: Schema.ObjectId
   }
   //answers: {}
 	//user: {

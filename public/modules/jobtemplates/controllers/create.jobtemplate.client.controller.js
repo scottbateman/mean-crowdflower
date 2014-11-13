@@ -4,7 +4,8 @@
 angular.module('jobtemplates').controller('JTCreateCtrl', ['$scope', '$stateParams', '$location', 'Authentication', 'Jobtemplates',
   function($scope, $stateParams, $location, Authentication, Jobtemplates ) {
     $scope.authentication = Authentication;
-    $scope.models = ['Tweet'];
+    /** @todo fetch list of data models */
+    $scope.models = [];
 
     $scope.jobtemplate = {
       template: {
